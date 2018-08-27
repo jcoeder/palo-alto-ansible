@@ -10,13 +10,13 @@ update-cluster.yml uses vars for code version
 
 
 
-YOUR FIREWALLS MUST HAVE PROPERLY CONFIGURED SERVICE ROUTES, WORKING DNS, AND CURRENT LICENSING
+### YOUR FIREWALLS MUST HAVE PROPERLY CONFIGURED SERVICE ROUTES, WORKING DNS, AND CURRENT LICENSING
 
 
 
 
 
-
+# Other Configuration Items
 
 CentOS7 and Redhat7 now ship with Python 2.7.5 or later.  By default SSL certification validation is enabled.  Disable this to make your life easier.
 
