@@ -1,0 +1,212 @@
+- name: Fetching Latest Licensing
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Fetch Latest Licensing
+    panos_op:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      cmd: request license fetch
+    register: result
+
+  - name: returned output in the default JSON format
+    debug: msg='{{ result.stdout }}'
+
+  - name: returned output in the XML format
+    debug: msg='{{ result.stdout_xml }}'
+
+
+- name: Download Content Database
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Download Content Database
+    panos_op:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      cmd: request content upgrade download latest
+    register: result
+
+  - name: returned output in the default JSON format
+    debug: msg='{{ result.stdout }}'
+
+  - name: returned output in the XML format
+    debug: msg='{{ result.stdout_xml }}'
+
+- name: Wait for download of Latest Content Database
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - pause:
+      minutes: 2
+
+- name: Sync Content Database
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Download Content Database
+    panos_op:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      cmd: request content upgrade download sync-to-peer
+    register: result
+
+  - name: returned output in the default JSON format
+    debug: msg='{{ result.stdout }}'
+
+  - name: returned output in the XML format
+    debug: msg='{{ result.stdout_xml }}'
+
+
+- name: Wait for download of Latest Content Database
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - pause:
+      minutes: 2
+
+- name: Install Latest Content Database
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Install Latest Content Database
+    panos_op:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      cmd: request content upgrade install version latest
+    register: result
+
+  - name: returned output in the default JSON format
+    debug: msg='{{ result.stdout }}'
+
+  - name: returned output in the XML format
+    debug: msg='{{ result.stdout_xml }}'
+
+- name: Wait for installation of Latest Content Database
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - pause:
+      minutes: 2
+
+- name: Updating Firewall B to PANOS '{{ version }}'
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars:
+      dir: vars
+      extensions:
+          - yml
+          - yaml
+
+  - name: Install PANOS '{{ version }}' on Firewall B and restart
+    panos_software:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      version: '{{ version }}'
+      restart: true
+
+- name: Wait for Firewall B to boot PANOS '{{ version }}'
+  hosts: cluster-b
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - pause:
+      minutes: 3
+
+  - wait_for:
+     host: '{{ ip_address }}'
+     port: 443
+     delay: 180
+     sleep: 5
+     connect_timeout: 5
+     timeout: 1200
+
+- name: Updating Firewall A to PANOS '{{ version }}'
+  hosts: cluster-a
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars:
+      dir: vars
+      extensions:
+          - yml
+          - yaml
+
+  - name: Install PANOS '{{ version }}' on Firewall A and restart
+    panos_software:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      version: '{{ version }}'
+      restart: true
+
+- name: Wait for Firewall A to boot PANOS '{{ version }}'
+  hosts: cluster-a
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - pause:
+      minutes: 3
+
+  - wait_for:
+     host: '{{ ip_address }}'
+     port: 443
+     delay: 180
+     sleep: 5
+     connect_timeout: 5
+     timeout: 1200

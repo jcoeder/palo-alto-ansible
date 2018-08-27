@@ -1,0 +1,19 @@
+- name: Updating Firewall
+  hosts: cluster-a
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Install PAN-OS 8.1.2 and restart
+    panos_software:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      version: '8.1.2'
+      restart: true
