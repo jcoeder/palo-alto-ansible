@@ -1,4 +1,3 @@
-###GIT TEST
 - name: Fetching Latest Licensing
   hosts: cluster-b
   connection: local
