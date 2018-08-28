@@ -1,0 +1,25 @@
+- name: Fetching Latest Licensing
+  hosts: firewall-cluster
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Fetch Latest Licensing
+    panos_op:
+      ip_address: '{{ ip_address }}'
+      api_key: '{{ api_key }}'
+      cmd: request license fetch
+    register: result
+
+  - name: returned output in the default JSON format
+    debug: msg='{{ result.stdout }}'
+
+  - name: returned output in the XML format
+    debug: msg='{{ result.stdout_xml }}'
+

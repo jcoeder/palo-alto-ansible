@@ -1,0 +1,26 @@
+- name: Install Latest Content Database
+  hosts: firewall-cluster
+  connection: local
+  gather_facts: False
+
+  roles:
+    - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+  - include_vars: 'firewall-secrets.yml'
+    no_log: 'yes'
+
+  - name: Install Latest Content Database
+    panos_op:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      api_key: '{{ api_key }}'
+      cmd: request content upgrade install version latest
+    register: result
+
+  - name: returned output in the default JSON format
+    debug: msg='{{ result.stdout }}'
+
+  - name: returned output in the XML format
+    debug: msg='{{ result.stdout_xml }}'
