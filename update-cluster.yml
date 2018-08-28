@@ -60,33 +60,6 @@
   - pause:
       minutes: 2
 
-- name: Sync Content Database
-  hosts: cluster-b
-  connection: local
-  gather_facts: False
-
-  roles:
-    - role: PaloAltoNetworks.paloaltonetworks
-
-  tasks:
-  - include_vars: 'firewall-secrets.yml'
-    no_log: 'yes'
-
-  - name: Download Content Database
-    panos_op:
-      ip_address: '{{ ip_address }}'
-      username: '{{ username }}'
-      password: '{{ password }}'
-      cmd: request content upgrade download sync-to-peer
-    register: result
-
-  - name: returned output in the default JSON format
-    debug: msg='{{ result.stdout }}'
-
-  - name: returned output in the XML format
-    debug: msg='{{ result.stdout_xml }}'
-
-
 - name: Wait for download of Latest Content Database
   hosts: cluster-b
   connection: local
@@ -130,6 +103,15 @@
   tasks:
   - pause:
       minutes: 2
+
+
+
+
+
+
+
+
+
 
 - name: Updating Firewall B to PANOS '{{ version }}'
   hosts: cluster-b

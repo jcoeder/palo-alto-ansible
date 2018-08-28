@@ -1,5 +1,5 @@
 - name: Updating Firewall
-  hosts: cluster-b
+  hosts: firewall-b
   connection: local
   gather_facts: False
 
@@ -10,10 +10,12 @@
   - include_vars: 'firewall-secrets.yml'
     no_log: 'yes'
 
-  - name: Install PAN-OS 8.1.2 and restart
+  - name: Install PAN-OS and restart
     panos_software:
       ip_address: '{{ ip_address }}'
       username: '{{ username }}'
       password: '{{ password }}'
-      version: '8.1.2'
+      #API user doesn't have superuser permissions even when configured
+      #api_key: '{{ api_key }}'
+      version: '8.0.6'
       restart: true
