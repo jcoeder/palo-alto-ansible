@@ -24,3 +24,5 @@ CentOS7 and Redhat7 now ship with Python 2.7.5 or later.  By default SSL certifi
 
 verify=disable
 
+
+As of August 2018 Fedora still uses python 2.7.15.  No need to make the above changes.
