@@ -26,3 +26,6 @@ verify=disable
 
 
 As of August 2018 Fedora still uses python 2.7.15.  No need to make the above changes.
+
+
+### All of this *works* but Palo Altos current release of pan-device does not account for all the oddities in their API so its not very graceful
